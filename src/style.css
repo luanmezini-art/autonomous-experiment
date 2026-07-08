@@ -213,6 +213,36 @@ button.sekundaer {
   margin-bottom: 0.85rem;
 }
 
+.abschnitt-titel {
+  font-size: 1.15rem;
+  margin: 1.75rem 0 0.75rem;
+}
+
+.textbaustein-karte {
+  border: 1px solid var(--farbe-rahmen);
+  border-radius: 0.4rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.textbaustein-karte .titel {
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.textbaustein-karte textarea {
+  width: 100%;
+  margin: 0.5rem 0 0.6rem;
+  padding: 0.6rem;
+  border-radius: 0.4rem;
+  border: 1px solid var(--farbe-rahmen);
+  background: var(--farbe-hintergrund);
+  color: var(--farbe-text);
+  font-family: inherit;
+  font-size: 0.88rem;
+  resize: vertical;
+}
+
 footer {
   margin-top: 2.5rem;
   font-size: 0.8rem;

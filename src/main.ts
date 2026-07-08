@@ -13,6 +13,7 @@ import {
   type Betriebsgroesse,
   type Hinweis,
 } from "./hinweise";
+import { anwaltsanfrageText, arbeitsagenturZusammenfassungText } from "./textbausteine";
 
 const BUNDESLAENDER: Record<Bundesland, string> = {
   BW: "Baden-Württemberg",
@@ -66,6 +67,10 @@ app.innerHTML = `
         <label for="beendigungsdatum">Letzter Arbeitstag / Ende des Arbeitsverhältnisses</label>
         <input type="date" id="beendigungsdatum" required />
       </div>
+      <div class="feld">
+        <label for="arbeitgeber">Name des Arbeitgebers (optional, nur für Textbausteine)</label>
+        <input type="text" id="arbeitgeber" placeholder="z. B. Musterfirma GmbH" />
+      </div>
     </fieldset>
 
     <fieldset>
@@ -115,6 +120,20 @@ app.innerHTML = `
     <div id="hinweise-liste"></div>
     <div id="fristen-liste"></div>
     <div id="urlaub-ergebnis"></div>
+
+    <h2 class="abschnitt-titel">Formulierungshilfen</h2>
+    <div class="textbaustein-karte">
+      <div class="titel">Dringende Anfrage an eine Kanzlei</div>
+      <p class="hilfetext">Zum Kopieren in eine E-Mail an einen Fachanwalt für Arbeitsrecht oder den gewerkschaftlichen Rechtsschutz.</p>
+      <textarea id="text-anwaltsanfrage" readonly rows="10"></textarea>
+      <button type="button" class="sekundaer" data-copy-target="text-anwaltsanfrage">Text kopieren</button>
+    </div>
+    <div class="textbaustein-karte">
+      <div class="titel">Angaben für die Meldung bei der Agentur für Arbeit</div>
+      <p class="hilfetext">Zum Vorlesen am Telefon, Einfügen in ein Online-Kontaktformular oder Ausdrucken für den Termin.</p>
+      <textarea id="text-arbeitsagentur" readonly rows="8"></textarea>
+      <button type="button" class="sekundaer" data-copy-target="text-arbeitsagentur">Text kopieren</button>
+    </div>
   </div>
 
   <footer>
@@ -179,6 +198,7 @@ formular.addEventListener("submit", (event) => {
   const beschaeftigtSeit = parseDate((document.querySelector<HTMLInputElement>("#beschaeftigt-seit")!).value);
   const jahresurlaub = Number((document.querySelector<HTMLInputElement>("#jahresurlaub")!).value);
   const genommeneTage = Number((document.querySelector<HTMLInputElement>("#genommene-tage")!).value);
+  const arbeitgeber = (document.querySelector<HTMLInputElement>("#arbeitgeber")!).value;
   const betriebsgroesse = (document.querySelector<HTMLSelectElement>("#betriebsgroesse")!).value as Betriebsgroesse;
   const schwangerschaft = (document.querySelector<HTMLInputElement>("#schwangerschaft")!).checked;
   const schwerbehinderung = (document.querySelector<HTMLInputElement>("#schwerbehinderung")!).checked;
@@ -223,6 +243,17 @@ formular.addEventListener("submit", (event) => {
       <p class="erklaerung">${urlaub.erklaerung}</p>
     </div>`;
 
+  const textbausteinEingabe = {
+    arbeitgeber,
+    zugangsdatum,
+    klagefristDatum: klagefrist.datum,
+    letzterArbeitstag: beendigungsdatum,
+  };
+  (document.querySelector<HTMLTextAreaElement>("#text-anwaltsanfrage")!).value =
+    anwaltsanfrageText(textbausteinEingabe);
+  (document.querySelector<HTMLTextAreaElement>("#text-arbeitsagentur")!).value =
+    arbeitsagenturZusammenfassungText(textbausteinEingabe);
+
   ergebnisContainer.hidden = false;
   ergebnisContainer.scrollIntoView({ behavior: "smooth" });
 });
@@ -240,4 +271,28 @@ document.querySelector<HTMLButtonElement>("#ics-download")!.addEventListener("cl
 
 document.querySelector<HTMLButtonElement>("#drucken")!.addEventListener("click", () => {
   window.print();
+});
+
+document.querySelectorAll<HTMLButtonElement>("[data-copy-target]").forEach((button) => {
+  const urspruenglicherText = button.textContent;
+
+  button.addEventListener("click", async () => {
+    const targetId = button.dataset.copyTarget!;
+    const textarea = document.querySelector<HTMLTextAreaElement>(`#${targetId}`)!;
+
+    try {
+      await navigator.clipboard.writeText(textarea.value);
+      button.textContent = "Kopiert!";
+    } catch {
+      // Clipboard-API kann z. B. ohne Dokument-Fokus fehlschlagen – Text
+      // wird dann wenigstens für manuelles Kopieren (Strg+C) markiert.
+      textarea.focus();
+      textarea.select();
+      button.textContent = "Bitte manuell kopieren (Strg+C)";
+    }
+
+    setTimeout(() => {
+      button.textContent = urspruenglicherText;
+    }, 2000);
+  });
 });

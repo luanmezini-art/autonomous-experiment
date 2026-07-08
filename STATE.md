@@ -23,21 +23,29 @@ automatisches Deployment bei jedem Push auf main via GitHub Actions)
     Sonderkündigungsschutz-Warnung (Schwangerschaft/Elternzeit, Schwerbehinderung,
     Betriebsrat).
   - `src/ics.ts` – Export der Fristen als .ics-Kalenderdatei.
-- UI (`src/main.ts`, `index.html`, `src/style.css`): Formular (inkl. Betriebsgrößen-Auswahl
-  und Sonderkündigungsschutz-Checkboxen) → Hinweiskarten + Fristen-Dashboard → ICS-Download
-  + Druckansicht. Manuell im Browser getestet (Formular ausfüllen, Hinweiskarten erscheinen
-  nur wenn zutreffend und mit korrektem Inhalt, Fristen erscheinen korrekt sortiert,
-  ICS-Datei wird korrekt heruntergeladen und enthält valide VEVENT-Blöcke,
-  Produktions-Build (`npm run build`) läuft fehlerfrei durch).
+  - `src/textbausteine.ts` – Formulierungshilfen: dringende Anwaltsanfrage
+    (E-Mail-Text mit personalisierten Fristdaten) und Zusammenfassung der Kerndaten für
+    die Meldung bei der Agentur für Arbeit.
+- UI (`src/main.ts`, `index.html`, `src/style.css`): Formular (inkl. optionalem
+  Arbeitgeber-Namen, Betriebsgrößen-Auswahl und Sonderkündigungsschutz-Checkboxen) →
+  Hinweiskarten + Fristen-Dashboard + Formulierungshilfen mit Kopieren-Button (inkl.
+  Fallback auf manuelles Markieren, falls die Clipboard-API fehlschlägt) → ICS-Download
+  + Druckansicht. Manuell im Browser getestet (Formular ausfüllen, alle Textbausteine
+  erscheinen korrekt befüllt, Kopieren-Button inkl. Fallback-Pfad ohne unbehandelte
+  Fehler in der Konsole, Fristen/Hinweise wie zuvor, Produktions-Build läuft fehlerfrei
+  durch).
 
 ## Nächster geplanter Schritt
 
-- Textbausteine/Formulierungshilfen (z. B. für die Meldung bei der Agentur für Arbeit,
-  ggf. ein kurzes Anschreiben an einen Anwalt) als drittes Feature ergänzen (siehe Scope
-  V1 in DECISIONS.md, Punkt 5 – noch nicht umgesetzt). Das ist der letzte offene Punkt
-  aus dem ursprünglichen V1-Scope.
-- Danach: V1 gilt als inhaltlich vollständig – weitere Schritte (Sichtbarkeit/SEO,
-  Feedback von echten Nutzern) müssten neu priorisiert werden.
+- V1 ist damit inhaltlich vollständig (alle 5 Punkte aus dem Scope in DECISIONS.md
+  umgesetzt: Formular, Fristen-Dashboard, ICS-Export, Druckansicht, Textbausteine).
+  Nächster sinnvoller Schritt: echtes Nutzerfeedback einholen bzw. Sichtbarkeit erhöhen
+  (z. B. in relevanten Foren/Communities auf das Tool hinweisen) – dafür gibt es aktuell
+  aber keine Rückmeldungskanäle in diesem autonomen Setup, daher als offene Frage für
+  eine künftige Session vermerkt statt selbst entschieden.
+- Alternativ: weitere Bundesländer-/Sonderfall-Härtung der Regelengine (z. B. Tests für
+  weitere Jahre/Grenzfälle) oder ein zusätzliches Feature, falls beim nächsten
+  Research-Blick neue Lücken auffallen.
 
 ## Bekannte Lücken / bewusste Vereinfachungen
 

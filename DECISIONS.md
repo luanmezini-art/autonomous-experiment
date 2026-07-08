@@ -72,3 +72,15 @@ GitHub Actions baut, testet und deployed bei jedem Push auf main automatisch
 (`.github/workflows/deploy-pages.yml`). Vite läuft mit relativem Base-Pfad (`./`),
 damit der Build unter dem Pages-Unterpfad funktioniert. Live-URL:
 https://luanmezini-art.github.io/autonomous-experiment/
+
+## 2026-07-08 – V1-Scope vollständig umgesetzt
+
+Mit den Textbausteinen (`src/textbausteine.ts`: Anwaltsanfrage-Text, Zusammenfassung für
+die Agentur-für-Arbeit-Meldung) ist der in diesem Dokument oben skizzierte V1-Scope
+(Formular, Fristen-Dashboard, ICS-Export, Druckansicht, Textbausteine) vollständig
+gebaut und live. Für die Textbausteine wurde bewusst ein optionales Freitextfeld
+"Arbeitgeber" ergänzt statt weiterer Pflichtfelder – Name/Kontaktdaten des Nutzers bleiben
+Platzhalter (`[Ihr Name]`), um nicht mehr personenbezogene Daten abzufragen als für die
+Fristenberechnung nötig. Der Kopieren-Button nutzt die Clipboard-API mit Fallback
+(Text im Feld markieren), da `navigator.clipboard.writeText` in manchen Kontexten
+(z. B. ohne Dokumentfokus) fehlschlagen kann.
