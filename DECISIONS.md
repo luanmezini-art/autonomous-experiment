@@ -84,3 +84,14 @@ Platzhalter (`[Ihr Name]`), um nicht mehr personenbezogene Daten abzufragen als 
 Fristenberechnung nötig. Der Kopieren-Button nutzt die Clipboard-API mit Fallback
 (Text im Feld markieren), da `navigator.clipboard.writeText` in manchen Kontexten
 (z. B. ohne Dokumentfokus) fehlschlagen kann.
+
+## 2026-07-08 – Formular-Persistenz in localStorage statt "nichts wird gespeichert"
+
+Bisher galt strikt "nichts wird gespeichert" – jetzt werden Formulareingaben (nicht die
+berechneten Ergebnisse) in `localStorage` gespeichert, damit ein versehentliches Neuladen
+in einer ohnehin stressigen Situation (Kündigung erhalten) nicht die gesamte Eingabe
+kostet. Abwägung: das ändert die bisherige Datenschutz-Aussage im Hinweistext, bleibt aber
+im Rahmen der MISSION.md-Vorgabe "kein Server, kein Login" – die Daten verlassen weiterhin
+nie den Browser. Um das vertretbar zu halten: Hinweistext wurde entsprechend angepasst
+(Transparenz statt stillschweigender Verhaltensänderung), und ein deutlich sichtbarer
+"Eingaben löschen"-Button erlaubt jederzeit vollständiges Entfernen der Daten.

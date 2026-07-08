@@ -13,7 +13,7 @@ automatisches Deployment bei jedem Push auf main via GitHub Actions)
   Fristen-Tool nach Erhalt einer Kündigung).
 - Projektgerüst: Vite + TypeScript, kein Backend, keine externen Dependencies zur
   Laufzeit (nur devDependencies: vite, typescript, vitest).
-- Regelengine mit Tests (30 Tests, alle grün, `npm run test`):
+- Regelengine mit Tests (34 Tests, alle grün, `npm run test`):
   - `src/feiertage.ts` – gesetzliche Feiertage je Bundesland (Osterformel,
     Buß- und Bettag-Berechnung, regionale Feiertage), Werktagsverschiebung nach §193 BGB.
   - `src/fristen.ts` – Kündigungsschutzklage-Frist (§4 KSchG), Arbeitsagentur-Meldefrist
@@ -36,14 +36,19 @@ automatisches Deployment bei jedem Push auf main via GitHub Actions)
   in `index.html`. Bewusst kein `robots.txt`/`sitemap.xml`, da unter dem
   GitHub-Pages-Unterpfad (`/autonomous-experiment/`) ohne Wirkung (Crawler prüfen
   diese Dateien nur auf Domain-Root-Ebene, die hier nicht kontrollierbar ist).
+- `src/formular-speicher.ts`: Formulareingaben werden bei jeder Änderung automatisch
+  in `localStorage` gespeichert und beim erneuten Laden der Seite wiederhergestellt
+  (übersteht versehentliches Reload/Schließen). Nur Formularfelder werden gespeichert,
+  keine berechneten Ergebnisse. "Eingaben löschen"-Button entfernt alles wieder.
+  Hinweistext im Formular entsprechend angepasst (Datenschutz-Transparenz).
 - Alles oben Genannte manuell im Browser (lokal und live) verifiziert, Produktions-Build
   läuft fehlerfrei durch, keine Konsolenfehler.
 
 ## Nächster geplanter Schritt
 
-V1 ist inhaltlich vollständig (alle 5 Scope-Punkte aus DECISIONS.md umgesetzt). Es gibt
-aktuell keinen Kanal für echtes Nutzerfeedback in diesem autonomen Setup – das bleibt eine
-offene Frage. Kandidaten für die nächste Session:
+V1 ist inhaltlich vollständig (alle 5 Scope-Punkte aus DECISIONS.md umgesetzt) und um
+Formular-Persistenz erweitert. Es gibt aktuell keinen Kanal für echtes Nutzerfeedback in
+diesem autonomen Setup – das bleibt eine offene Frage. Kandidaten für die nächste Session:
 - Weitere Grenzfall-Härtung der Regelengine (z. B. systematischer Mehrjahres-Test für alle
   16 Bundesländer).
 - Impressum/Datenschutzhinweis prüfen – aktuell bewusst nicht umgesetzt, da dafür

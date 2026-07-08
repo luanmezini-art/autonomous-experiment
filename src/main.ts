@@ -14,6 +14,7 @@ import {
   type Hinweis,
 } from "./hinweise";
 import { anwaltsanfrageText, arbeitsagenturZusammenfassungText } from "./textbausteine";
+import { formularSpeichern, formularLaden, formularLoeschen, type FormularDaten } from "./formular-speicher";
 
 const BUNDESLAENDER: Record<Bundesland, string> = {
   BW: "Baden-Württemberg",
@@ -43,10 +44,12 @@ app.innerHTML = `
   </header>
 
   <div class="hinweisbox">
-    Alle Eingaben bleiben in Ihrem Browser – es wird nichts an einen Server
-    gesendet und nichts gespeichert. Dieses Tool ersetzt keine
-    Rechtsberatung im Einzelfall, sondern zeigt die gesetzlichen Fristen
-    nach der Standardregelung.
+    Alle Eingaben bleiben ausschließlich in Ihrem Browser (lokal gespeichert,
+    damit sie bei einem versehentlichen Neuladen nicht verloren gehen) – es
+    wird nichts an einen Server gesendet. Mit dem Button "Eingaben löschen"
+    entfernen Sie alles wieder. Dieses Tool ersetzt keine Rechtsberatung im
+    Einzelfall, sondern zeigt die gesetzlichen Fristen nach der
+    Standardregelung.
   </div>
 
   <form id="formular">
@@ -110,7 +113,10 @@ app.innerHTML = `
     </fieldset>
 
     <p id="formular-fehler" class="fehlertext" hidden></p>
-    <button type="submit" class="primaer">Fristen berechnen</button>
+    <div class="aktionen">
+      <button type="submit" class="primaer">Fristen berechnen</button>
+      <button type="button" id="eingaben-loeschen" class="sekundaer">Eingaben löschen</button>
+    </div>
   </form>
 
   <div id="ergebnis" hidden>
@@ -177,6 +183,7 @@ const ergebnisContainer = document.querySelector<HTMLDivElement>("#ergebnis")!;
 const hinweiseListe = document.querySelector<HTMLDivElement>("#hinweise-liste")!;
 const fristenListe = document.querySelector<HTMLDivElement>("#fristen-liste")!;
 const urlaubErgebnis = document.querySelector<HTMLDivElement>("#urlaub-ergebnis")!;
+const formularFehler = document.querySelector<HTMLParagraphElement>("#formular-fehler")!;
 
 function renderHinweise(hinweise: Hinweis[]): void {
   hinweiseListe.innerHTML = hinweise
@@ -190,7 +197,51 @@ function renderHinweise(hinweise: Hinweis[]): void {
     .join("");
 }
 
-const formularFehler = document.querySelector<HTMLParagraphElement>("#formular-fehler")!;
+function leseFormularDaten(): FormularDaten {
+  return {
+    zugangsdatum: (document.querySelector<HTMLInputElement>("#zugangsdatum")!).value,
+    bundesland: bundeslandSelect.value,
+    beendigungsdatum: (document.querySelector<HTMLInputElement>("#beendigungsdatum")!).value,
+    arbeitgeber: (document.querySelector<HTMLInputElement>("#arbeitgeber")!).value,
+    beschaeftigtSeit: (document.querySelector<HTMLInputElement>("#beschaeftigt-seit")!).value,
+    jahresurlaub: (document.querySelector<HTMLInputElement>("#jahresurlaub")!).value,
+    genommeneTage: (document.querySelector<HTMLInputElement>("#genommene-tage")!).value,
+    betriebsgroesse: (document.querySelector<HTMLSelectElement>("#betriebsgroesse")!).value,
+    schwangerschaft: (document.querySelector<HTMLInputElement>("#schwangerschaft")!).checked,
+    schwerbehinderung: (document.querySelector<HTMLInputElement>("#schwerbehinderung")!).checked,
+    betriebsrat: (document.querySelector<HTMLInputElement>("#betriebsrat")!).checked,
+  };
+}
+
+function schreibeFormularDaten(daten: FormularDaten): void {
+  (document.querySelector<HTMLInputElement>("#zugangsdatum")!).value = daten.zugangsdatum;
+  bundeslandSelect.value = daten.bundesland;
+  (document.querySelector<HTMLInputElement>("#beendigungsdatum")!).value = daten.beendigungsdatum;
+  (document.querySelector<HTMLInputElement>("#arbeitgeber")!).value = daten.arbeitgeber;
+  (document.querySelector<HTMLInputElement>("#beschaeftigt-seit")!).value = daten.beschaeftigtSeit;
+  (document.querySelector<HTMLInputElement>("#jahresurlaub")!).value = daten.jahresurlaub;
+  (document.querySelector<HTMLInputElement>("#genommene-tage")!).value = daten.genommeneTage;
+  (document.querySelector<HTMLSelectElement>("#betriebsgroesse")!).value = daten.betriebsgroesse;
+  (document.querySelector<HTMLInputElement>("#schwangerschaft")!).checked = daten.schwangerschaft;
+  (document.querySelector<HTMLInputElement>("#schwerbehinderung")!).checked = daten.schwerbehinderung;
+  (document.querySelector<HTMLInputElement>("#betriebsrat")!).checked = daten.betriebsrat;
+}
+
+const gespeicherteDaten = formularLaden(window.localStorage);
+if (gespeicherteDaten) {
+  schreibeFormularDaten(gespeicherteDaten);
+}
+
+formular.addEventListener("input", () => {
+  formularSpeichern(leseFormularDaten(), window.localStorage);
+});
+
+document.querySelector<HTMLButtonElement>("#eingaben-loeschen")!.addEventListener("click", () => {
+  formularLoeschen(window.localStorage);
+  formular.reset();
+  formularFehler.hidden = true;
+  ergebnisContainer.hidden = true;
+});
 
 formular.addEventListener("submit", (event) => {
   event.preventDefault();
