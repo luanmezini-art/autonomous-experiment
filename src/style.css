@@ -1,0 +1,191 @@
+:root {
+  color-scheme: light dark;
+  --farbe-akzent: #1d4e89;
+  --farbe-warnung: #b3261e;
+  --farbe-hintergrund: #ffffff;
+  --farbe-text: #1a1a1a;
+  --farbe-rahmen: #d9d9d9;
+  --farbe-flaeche: #f6f7f9;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --farbe-hintergrund: #14161a;
+    --farbe-text: #e8e8e8;
+    --farbe-rahmen: #33363c;
+    --farbe-flaeche: #1d2025;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--farbe-hintergrund);
+  color: var(--farbe-text);
+  line-height: 1.5;
+}
+
+#app {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+header h1 {
+  font-size: 1.6rem;
+  margin-bottom: 0.25rem;
+}
+
+header p.untertitel {
+  color: #6b7280;
+  margin-top: 0;
+}
+
+.hinweisbox {
+  background: var(--farbe-flaeche);
+  border: 1px solid var(--farbe-rahmen);
+  border-radius: 0.5rem;
+  padding: 0.9rem 1rem;
+  font-size: 0.92rem;
+  margin: 1rem 0 1.5rem;
+}
+
+fieldset {
+  border: 1px solid var(--farbe-rahmen);
+  border-radius: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.1rem 1.2rem;
+}
+
+legend {
+  font-weight: 600;
+  padding: 0 0.4rem;
+}
+
+label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.feld {
+  margin-bottom: 0.9rem;
+}
+
+.feld-zeile {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.feld-zeile > .feld {
+  flex: 1 1 12rem;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.4rem;
+  border: 1px solid var(--farbe-rahmen);
+  background: var(--farbe-hintergrund);
+  color: var(--farbe-text);
+  font-size: 1rem;
+}
+
+.hilfetext {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.2rem;
+}
+
+button {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.65rem 1.1rem;
+  border-radius: 0.4rem;
+  border: none;
+  cursor: pointer;
+}
+
+button.primaer {
+  background: var(--farbe-akzent);
+  color: white;
+}
+
+button.sekundaer {
+  background: transparent;
+  border: 1px solid var(--farbe-akzent);
+  color: var(--farbe-akzent);
+}
+
+.aktionen {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+
+#ergebnis {
+  margin-top: 1.5rem;
+}
+
+.frist-karte {
+  border: 1px solid var(--farbe-rahmen);
+  border-left: 4px solid var(--farbe-akzent);
+  border-radius: 0.4rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.85rem;
+  background: var(--farbe-flaeche);
+}
+
+.frist-karte.dringend {
+  border-left-color: var(--farbe-warnung);
+}
+
+.frist-karte .datum {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.frist-karte .titel {
+  font-weight: 600;
+  margin: 0.15rem 0 0.35rem;
+}
+
+.frist-karte .erklaerung {
+  font-size: 0.92rem;
+  margin: 0 0 0.3rem;
+}
+
+.frist-karte .rechtsgrundlage {
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.urlaub-karte {
+  border: 1px solid var(--farbe-rahmen);
+  border-radius: 0.4rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.85rem;
+}
+
+footer {
+  margin-top: 2.5rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+  border-top: 1px solid var(--farbe-rahmen);
+  padding-top: 1rem;
+}
+
+@media print {
+  .aktionen,
+  footer {
+    display: none;
+  }
+}
