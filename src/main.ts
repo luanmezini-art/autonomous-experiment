@@ -7,6 +7,12 @@ import {
   type Frist,
 } from "./fristen";
 import { fristenAlsIcs } from "./ics";
+import {
+  betriebsgroesseHinweis,
+  sonderkuendigungsschutzHinweis,
+  type Betriebsgroesse,
+  type Hinweis,
+} from "./hinweise";
 
 const BUNDESLAENDER: Record<Bundesland, string> = {
   BW: "Baden-Württemberg",
@@ -80,6 +86,24 @@ app.innerHTML = `
       </div>
     </fieldset>
 
+    <fieldset>
+      <legend>Kündigungsschutz</legend>
+      <div class="feld">
+        <label for="betriebsgroesse">Wie viele Beschäftigte hat der Betrieb ungefähr?</label>
+        <select id="betriebsgroesse" required>
+          <option value="ueber10">Mehr als 10</option>
+          <option value="bis10">10 oder weniger</option>
+          <option value="unklar">Weiß ich nicht</option>
+        </select>
+      </div>
+      <div class="feld">
+        <label>Trifft etwas davon auf Sie zu?</label>
+        <label class="checkbox-zeile"><input type="checkbox" id="schwangerschaft" /> Schwangerschaft oder Elternzeit</label>
+        <label class="checkbox-zeile"><input type="checkbox" id="schwerbehinderung" /> Schwerbehinderung oder Gleichstellung</label>
+        <label class="checkbox-zeile"><input type="checkbox" id="betriebsrat" /> Mitglied im Betriebs-/Personalrat</label>
+      </div>
+    </fieldset>
+
     <button type="submit" class="primaer">Fristen berechnen</button>
   </form>
 
@@ -88,6 +112,7 @@ app.innerHTML = `
       <button id="ics-download" class="sekundaer" type="button">Kalender-Datei (.ics) herunterladen</button>
       <button id="drucken" class="sekundaer" type="button">Checkliste drucken</button>
     </div>
+    <div id="hinweise-liste"></div>
     <div id="fristen-liste"></div>
     <div id="urlaub-ergebnis"></div>
   </div>
@@ -129,8 +154,21 @@ let aktuelleFristen: Frist[] = [];
 
 const formular = document.querySelector<HTMLFormElement>("#formular")!;
 const ergebnisContainer = document.querySelector<HTMLDivElement>("#ergebnis")!;
+const hinweiseListe = document.querySelector<HTMLDivElement>("#hinweise-liste")!;
 const fristenListe = document.querySelector<HTMLDivElement>("#fristen-liste")!;
 const urlaubErgebnis = document.querySelector<HTMLDivElement>("#urlaub-ergebnis")!;
+
+function renderHinweise(hinweise: Hinweis[]): void {
+  hinweiseListe.innerHTML = hinweise
+    .map(
+      (hinweis) => `
+        <div class="hinweis-karte ${hinweis.stufe}">
+          <div class="titel">${hinweis.titel}</div>
+          <p class="erklaerung">${hinweis.text}</p>
+        </div>`,
+    )
+    .join("");
+}
 
 formular.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -141,6 +179,20 @@ formular.addEventListener("submit", (event) => {
   const beschaeftigtSeit = parseDate((document.querySelector<HTMLInputElement>("#beschaeftigt-seit")!).value);
   const jahresurlaub = Number((document.querySelector<HTMLInputElement>("#jahresurlaub")!).value);
   const genommeneTage = Number((document.querySelector<HTMLInputElement>("#genommene-tage")!).value);
+  const betriebsgroesse = (document.querySelector<HTMLSelectElement>("#betriebsgroesse")!).value as Betriebsgroesse;
+  const schwangerschaft = (document.querySelector<HTMLInputElement>("#schwangerschaft")!).checked;
+  const schwerbehinderung = (document.querySelector<HTMLInputElement>("#schwerbehinderung")!).checked;
+  const betriebsrat = (document.querySelector<HTMLInputElement>("#betriebsrat")!).checked;
+
+  const hinweise = [
+    sonderkuendigungsschutzHinweis({
+      schwangerschaftOderElternzeit: schwangerschaft,
+      schwerbehinderung,
+      betriebsratsmitglied: betriebsrat,
+    }),
+    betriebsgroesseHinweis(betriebsgroesse),
+  ].filter((hinweis): hinweis is Hinweis => hinweis !== null);
+  renderHinweise(hinweise);
 
   const klagefrist = kuendigungsschutzklageFrist(zugangsdatum, bundesland);
   const meldefrist = arbeitsagenturMeldefrist(zugangsdatum, beendigungsdatum);
