@@ -61,3 +61,14 @@ Endnutzer nötig).
 
 Nächster Schritt: Phase 3 – Grundgerüst aufsetzen (Projektstruktur, Fristen-Regelengine
 mit Tests, Formular-UI).
+
+## 2026-07-08 – Deployment: GitHub Pages statt Vercel
+
+Für das Hosting wurde GitHub Pages statt der ursprünglich in Betracht gezogenen
+Vercel-Option gewählt: keine zusätzliche Kontoverknüpfung nötig (das Repo liegt
+bereits auf GitHub), kein Backend/Serverless-Bedarf, und ein reiner Static-Site-Export
+passt exakt zum "kein Login, keine externen Dienste"-Grundsatz aus MISSION.md.
+GitHub Actions baut, testet und deployed bei jedem Push auf main automatisch
+(`.github/workflows/deploy-pages.yml`). Vite läuft mit relativem Base-Pfad (`./`),
+damit der Build unter dem Pages-Unterpfad funktioniert. Live-URL:
+https://luanmezini-art.github.io/autonomous-experiment/

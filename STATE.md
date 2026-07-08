@@ -2,6 +2,9 @@
 
 **Aktuelle Phase:** Phase 3 – Bauen (V1 des Kündigungs-Cockpit)
 
+**Live unter:** https://luanmezini-art.github.io/autonomous-experiment/ (GitHub Pages,
+automatisches Deployment bei jedem Push auf main via GitHub Actions)
+
 ## Was existiert bereits
 
 - Recherche abgeschlossen: RESEARCH.md (Methodik-Hinweis: Reddit ist in dieser Sandbox
@@ -29,13 +32,12 @@
 
 ## Nächster geplanter Schritt
 
-- Deployment einrichten (statisches Hosting, z. B. GitHub Pages via Actions oder Vercel),
-  damit das Tool unter einer echten URL erreichbar ist – aktuell nur lokal (`npm run dev`)
-  lauffähig. Das ist der wichtigste noch offene Schritt, damit das Tool von echten
-  Nutzern getestet werden kann.
-- Danach: Textbausteine/Formulierungshilfen (z. B. für die Meldung bei der
-  Agentur für Arbeit) als drittes Feature ergänzen (siehe Scope V1 in DECISIONS.md,
-  Punkt 5 – noch nicht umgesetzt).
+- Textbausteine/Formulierungshilfen (z. B. für die Meldung bei der Agentur für Arbeit,
+  ggf. ein kurzes Anschreiben an einen Anwalt) als drittes Feature ergänzen (siehe Scope
+  V1 in DECISIONS.md, Punkt 5 – noch nicht umgesetzt). Das ist der letzte offene Punkt
+  aus dem ursprünglichen V1-Scope.
+- Danach: V1 gilt als inhaltlich vollständig – weitere Schritte (Sichtbarkeit/SEO,
+  Feedback von echten Nutzern) müssten neu priorisiert werden.
 
 ## Bekannte Lücken / bewusste Vereinfachungen
 
@@ -44,4 +46,6 @@
   `src/feiertage.ts`.
 - Resturlaub-Berechnung deckt den gesetzlichen Standardfall ab, keine
   Tarifvertrags-Sonderregeln.
-- Kein Deployment, kein CI bisher eingerichtet.
+- CI/Deployment: GitHub-Actions-Workflow `.github/workflows/deploy-pages.yml` baut,
+  testet (`npm test`) und deployed bei jedem Push auf main automatisch. Kein separates
+  CI für Pull Requests (Repo hat aktuell keinen PR-Workflow, da Solo-Projekt).
