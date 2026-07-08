@@ -162,6 +162,13 @@ button.sekundaer {
   color: var(--farbe-akzent);
 }
 
+.fehlertext {
+  color: var(--farbe-warnung);
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: -0.5rem 0 1rem;
+}
+
 .aktionen {
   display: flex;
   gap: 0.75rem;

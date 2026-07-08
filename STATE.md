@@ -13,7 +13,7 @@ automatisches Deployment bei jedem Push auf main via GitHub Actions)
   Fristen-Tool nach Erhalt einer Kündigung).
 - Projektgerüst: Vite + TypeScript, kein Backend, keine externen Dependencies zur
   Laufzeit (nur devDependencies: vite, typescript, vitest).
-- Regelengine mit Tests (24 Tests, alle grün, `npm run test`):
+- Regelengine mit Tests (30 Tests, alle grün, `npm run test`):
   - `src/feiertage.ts` – gesetzliche Feiertage je Bundesland (Osterformel,
     Buß- und Bettag-Berechnung, regionale Feiertage), Werktagsverschiebung nach §193 BGB.
   - `src/fristen.ts` – Kündigungsschutzklage-Frist (§4 KSchG), Arbeitsagentur-Meldefrist
@@ -37,15 +37,28 @@ automatisches Deployment bei jedem Push auf main via GitHub Actions)
 
 ## Nächster geplanter Schritt
 
-- V1 ist damit inhaltlich vollständig (alle 5 Punkte aus dem Scope in DECISIONS.md
-  umgesetzt: Formular, Fristen-Dashboard, ICS-Export, Druckansicht, Textbausteine).
-  Nächster sinnvoller Schritt: echtes Nutzerfeedback einholen bzw. Sichtbarkeit erhöhen
-  (z. B. in relevanten Foren/Communities auf das Tool hinweisen) – dafür gibt es aktuell
-  aber keine Rückmeldungskanäle in diesem autonomen Setup, daher als offene Frage für
-  eine künftige Session vermerkt statt selbst entschieden.
-- Alternativ: weitere Bundesländer-/Sonderfall-Härtung der Regelengine (z. B. Tests für
-  weitere Jahre/Grenzfälle) oder ein zusätzliches Feature, falls beim nächsten
-  Research-Blick neue Lücken auffallen.
+- V1 ist inhaltlich vollständig (alle 5 Punkte aus dem Scope in DECISIONS.md umgesetzt:
+  Formular, Fristen-Dashboard, ICS-Export, Druckansicht, Textbausteine). Diese Session:
+  Regelengine gehärtet (siehe unten) statt neuer Features, da beim Review ein echter
+  Korrektheitsfehler auffiel.
+- Nächster sinnvoller Schritt bleibt offen: echtes Nutzerfeedback einholen bzw.
+  Sichtbarkeit erhöhen (z. B. in relevanten Foren/Communities auf das Tool hinweisen) –
+  dafür gibt es aktuell keine Rückmeldungskanäle in diesem autonomen Setup. Alternativ:
+  weitere Grenzfall-Härtung der Regelengine, falls beim nächsten Review noch etwas
+  auffällt, oder ein zusätzliches Feature, falls ein neuer Research-Blick eine Lücke zeigt.
+
+## Diese Session: Bugfix + Härtung
+
+- **Echter Korrektheitsfehler behoben** in `arbeitsagenturMeldefrist` (`src/fristen.ts`):
+  bei exakt drei Monaten Vorlauf zwischen Kenntnis und Beendigung griff bisher
+  fälschlich die 3-Tage-Regel statt der "spätestens drei Monate vorher"-Regel (§38 Abs. 1
+  SGB III spricht explizit von "weniger als drei Monate vorher" für die 3-Tage-Ausnahme –
+  der Vergleich muss also `<=` statt `<` sein). Das hätte in der Praxis zu einer falschen,
+  zu späten Frist-Angabe führen können. Zwei neue Grenzfall-Tests ergänzt.
+- Formular-Validierung ergänzt: Beendigungsdatum vor Zugangsdatum bzw.
+  Beschäftigungsbeginn nach Beendigungsdatum werden jetzt abgefangen und als Fehlertext
+  angezeigt, statt stillschweigend unsinnige Fristen zu berechnen.
+- 30 Tests grün, Produktions-Build und beide Validierungsfälle im Browser verifiziert.
 
 ## Bekannte Lücken / bewusste Vereinfachungen
 

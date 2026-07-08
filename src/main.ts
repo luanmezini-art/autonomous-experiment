@@ -109,6 +109,7 @@ app.innerHTML = `
       </div>
     </fieldset>
 
+    <p id="formular-fehler" class="fehlertext" hidden></p>
     <button type="submit" class="primaer">Fristen berechnen</button>
   </form>
 
@@ -189,6 +190,8 @@ function renderHinweise(hinweise: Hinweis[]): void {
     .join("");
 }
 
+const formularFehler = document.querySelector<HTMLParagraphElement>("#formular-fehler")!;
+
 formular.addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -203,6 +206,24 @@ formular.addEventListener("submit", (event) => {
   const schwangerschaft = (document.querySelector<HTMLInputElement>("#schwangerschaft")!).checked;
   const schwerbehinderung = (document.querySelector<HTMLInputElement>("#schwerbehinderung")!).checked;
   const betriebsrat = (document.querySelector<HTMLInputElement>("#betriebsrat")!).checked;
+
+  if (beendigungsdatum.getTime() < zugangsdatum.getTime()) {
+    formularFehler.textContent =
+      "Das Ende des Arbeitsverhältnisses kann nicht vor dem Zugang der Kündigung liegen. Bitte prüfen Sie die Daten.";
+    formularFehler.hidden = false;
+    ergebnisContainer.hidden = true;
+    return;
+  }
+
+  if (beschaeftigtSeit.getTime() > beendigungsdatum.getTime()) {
+    formularFehler.textContent =
+      "Der Beschäftigungsbeginn kann nicht nach dem Ende des Arbeitsverhältnisses liegen. Bitte prüfen Sie die Daten.";
+    formularFehler.hidden = false;
+    ergebnisContainer.hidden = true;
+    return;
+  }
+
+  formularFehler.hidden = true;
 
   const hinweise = [
     sonderkuendigungsschutzHinweis({

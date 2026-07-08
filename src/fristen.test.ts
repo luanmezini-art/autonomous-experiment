@@ -37,6 +37,24 @@ describe("arbeitsagenturMeldefrist", () => {
     const frist = arbeitsagenturMeldefrist(kenntnis, beendigung);
     expect(frist.datum.toISOString().slice(0, 10)).toBe("2026-07-11");
   });
+
+  it("wendet bei genau drei Monaten Vorlauf die Drei-Monate-Regel an, nicht die 3-Tage-Regel", () => {
+    // Kenntnis exakt am Tag der "drei Monate vorher"-Grenze: die Meldung
+    // ist dann sofort fällig (an diesem Tag), nicht erst 3 Tage später.
+    const beendigung = d(2026, 12, 31);
+    const kenntnis = d(2026, 9, 30); // exakt 3 Monate vor dem 31.12.2026
+    const frist = arbeitsagenturMeldefrist(kenntnis, beendigung);
+    expect(frist.datum.toISOString().slice(0, 10)).toBe("2026-09-30");
+    expect(frist.erklaerung).toMatch(/mindestens drei Monate/);
+  });
+
+  it("wendet bei einem Tag weniger als drei Monaten Vorlauf die 3-Tage-Regel an", () => {
+    const beendigung = d(2026, 12, 31);
+    const kenntnis = d(2026, 10, 1); // ein Tag später als die Drei-Monats-Grenze
+    const frist = arbeitsagenturMeldefrist(kenntnis, beendigung);
+    expect(frist.datum.toISOString().slice(0, 10)).toBe("2026-10-04");
+    expect(frist.erklaerung).toMatch(/innerhalb von drei Tagen/);
+  });
 });
 
 describe("resturlaubBerechnen", () => {

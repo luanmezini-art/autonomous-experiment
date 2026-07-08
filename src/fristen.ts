@@ -66,16 +66,19 @@ export function arbeitsagenturMeldefrist(
   beendigungsDatum: Date,
 ): Frist {
   const dreiMonateVorher = addMonths(beendigungsDatum, -3);
-  const mehrAlsDreiMonateVorlauf = kenntnisDatum.getTime() < dreiMonateVorher.getTime();
+  // §38 Abs. 1 SGB III stellt auf "weniger als drei Monate vorher" ab – bei
+  // genau drei Monaten Vorlauf gilt daher noch die "spätestens drei Monate
+  // vorher"-Regel, nicht die 3-Tage-Regel. Deshalb <= statt < beim Vergleich.
+  const mindestensDreiMonateVorlauf = kenntnisDatum.getTime() <= dreiMonateVorher.getTime();
 
-  const datum = mehrAlsDreiMonateVorlauf ? dreiMonateVorher : addDays(kenntnisDatum, 3);
+  const datum = mindestensDreiMonateVorlauf ? dreiMonateVorher : addDays(kenntnisDatum, 3);
 
   return {
     id: "arbeitsagentur-meldung",
     titel: "Arbeitssuchend melden bei der Agentur für Arbeit",
     datum,
-    erklaerung: mehrAlsDreiMonateVorlauf
-      ? "Da mehr als drei Monate zwischen der Kenntnis und dem Ende des " +
+    erklaerung: mindestensDreiMonateVorlauf
+      ? "Da mindestens drei Monate zwischen der Kenntnis und dem Ende des " +
         "Arbeitsverhältnisses liegen, muss die Meldung spätestens drei " +
         "Monate vor Beendigung erfolgen."
       : "Da weniger als drei Monate zwischen Kenntnis und Beendigung " +
